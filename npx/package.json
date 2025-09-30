@@ -1,0 +1,27 @@
+{
+  "name": "run-claude-artifact",
+  "version": "2.0.0",
+  "description": "Run Claude AI Artifacts locally - quick preview, or create projects, build, deploy, and push to a Git repository.",
+  "bin": {
+    "run-claude-artifact": "./run-claude-artifact.js"
+  },
+  "scripts": {
+    "build": "echo \"nothing to build\"",
+    "test": "node run-claude-artifact.js --help"
+  },
+  "author": "Cláudio Silva",
+  "license": "MIT",
+  "keywords": [
+    "claude",
+    "artifact",
+    "react",
+    "vite",
+    "typescript",
+    "tailwindcss",
+    "shadcn-ui"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/claudio-silva/claude-artifact-runner"
+  }
+}
