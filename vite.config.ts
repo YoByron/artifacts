@@ -1,47 +1,27 @@
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
-import path from 'path'
-import fs from 'node:fs';
+import path from 'path';
+import react from '@vitejs/plugin-react';
+import { defineConfig } from 'vite';
 import Pages from 'vite-plugin-pages';
+import { viteSingleFile } from 'vite-plugin-singlefile';
 
-// https://vitejs.dev/config/
-export default defineConfig(({ mode }) => {
-
-  // For multi-file builds, do not inline the favicon. Ensure a standard link exists (optional safeguard).
-  const ensureFaviconLinkPlugin = {
-    name: 'ensure-favicon-link',
-    apply(config: any, { command }: { command: string }) {
-      return command === 'build';
+export default defineConfig({
+  base: './',
+  plugins: [
+    react(),
+    Pages({
+      dirs: 'src/artifacts',
+      extensions: ['tsx', 'jsx'],
+    }),
+    viteSingleFile(), // Add this plugin
+  ],
+  resolve: {
+    alias: {
+      '@': path.resolve(__dirname, './src'),
     },
-    transformIndexHtml: {
-      order: 'pre' as const,
-      handler(html: string) {
-        const icoPath = path.resolve(__dirname, 'public/favicon.ico');
-        if (!fs.existsSync(icoPath)) return html;
-        const tag = `<link rel="icon" type="image/x-icon" href="/favicon.ico">`;
-        return html.includes('rel="icon"')
-          ? html
-          : html.replace('</head>', `${tag}\n</head>`);
-      }
-    }
-  };
-
-  // No cleanup for multi-file builds; keep favicon.ico in output
-
-  return {
-    plugins: [
-      react(),
-      Pages({
-        dirs: [{ dir: 'src/artifacts', baseRoute: '' }],
-        extensions: ['jsx', 'tsx'],
-      }),
-      ensureFaviconLinkPlugin,
-    ].filter(Boolean),
-    resolve: {
-      alias: {
-        '@': path.resolve(__dirname, './src'),
-        'src': path.resolve(__dirname, './src'),
-      },
-    }
-  }
-})
+  },
+  build: {
+    // These options help with single file generation
+    cssCodeSplit: false,
+    assetsInlineLimit: 100000000, // Inline all assets
+  },
+});
